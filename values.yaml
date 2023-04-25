@@ -1,0 +1,153 @@
+replicaCount: 1
+image:
+  repository: atlassian/bitbucket
+  pullPolicy: IfNotPresent
+  tag: ""
+serviceAccount:
+  create: true
+  name:
+  imagePullSecrets: []
+  annotations: {}
+  role:
+    create: true
+  clusterRole:
+    create: false
+    name:
+  roleBinding:
+    create: true
+  clusterRoleBinding:
+    create: false
+    name:
+database:
+  url:
+  driver:
+  credentials:
+    secretName:
+    usernameSecretKey: username
+    passwordSecretKey: password
+volumes:
+  localHome:
+    persistentVolumeClaim:
+      create: false
+      storageClassName:
+      resources:
+        requests:
+          storage: 1Gi
+    customVolume: {}
+    mountPath: "/var/atlassian/application-data/bitbucket"
+  sharedHome:
+    persistentVolume:
+      create: false
+      nfs:
+        server: ""
+        path: ""
+      mountOptions: []
+    persistentVolumeClaim:
+      create: false
+      storageClassName:
+      volumeName:
+      accessMode: ReadWriteMany
+      resources:
+        requests:
+          storage: 1Gi
+    customVolume: {}
+    mountPath: "/var/atlassian/application-data/shared-home"
+    subPath:
+      additional: []
+ingress:
+  create: false
+  className: "nginx"
+  nginx: true
+  maxBodySize: 250m
+  proxyConnectTimeout: 60
+  proxyReadTimeout: 60
+  proxySendTimeout: 60
+  host:
+  path:
+  annotations: {}
+  https: true
+  tlsSecretName:
+bitbucket:
+  service:
+    port: 80
+    type: ClusterIP
+    loadBalancerIP:
+    contextPath:
+    annotations: {}
+  securityContextEnabled: true
+  securityContext:
+    fsGroup: 2003
+  containerSecurityContext: {}
+  setPermissions: true
+  ports:
+    http: 7990
+    ssh: 7999
+    hazelcast: 5701
+  license:
+    secretName:
+    secretKey: license-key
+  sysadminCredentials:
+    secretName:
+    usernameSecretKey: username
+    passwordSecretKey: password
+    displayNameSecretKey: displayName
+    emailAddressSecretKey: emailAddress
+  displayName:
+  clustering:
+    enabled: false
+    group:
+      secretName:
+      nameSecretKey: name
+      passwordSecretKey: password
+  elasticSearch:
+    baseUrl:
+    credentials:
+      secretName:
+      usernameSecretKey: username
+      passwordSecretKey: password
+  shutdown:
+    terminationGracePeriodSeconds: 35
+    command: "/shutdown-wait.sh"
+  podManagementStrategy: OrderedReady
+  resources:
+    jvm:
+      maxHeap: "1g"
+      minHeap: "512m"
+    container:
+      requests:
+        cpu: "2"
+        memory: "2G"
+  applicationMode: "default"
+  mirror:
+    upstreamUrl:
+  additionalJvmArgs: []
+  additionalLibraries: []
+  additionalBundledPlugins: []
+  additionalVolumeMounts: []
+  additionalEnvironmentVariables: []
+  additionalPorts: []
+  additionalVolumeClaimTemplates: []
+  topologySpreadConstraints: []
+fluentd:
+  enabled: false
+  imageRepo: fluent/fluentd-kubernetes-daemonset
+  imageTag: v1.11.5-debian-elasticsearch7-1.2
+  command:
+  customConfigFile: false
+  fluentdCustomConfig: {}
+  elasticsearch:
+    enabled: true
+    hostname: elasticsearch
+  extraVolumes: []
+podAnnotations: {}
+podLabels: {}
+nodeSelector: {}
+tolerations: []
+affinity: {}
+schedulerName:
+priorityClassName:
+additionalContainers: []
+additionalInitContainers: []
+additionalLabels: {}
+additionalFiles: []
+additionalHosts: []
